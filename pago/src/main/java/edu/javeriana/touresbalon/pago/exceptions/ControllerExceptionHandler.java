@@ -1,6 +1,6 @@
 package edu.javeriana.touresbalon.pago.exceptions;
 
-import edu.javeriana.touresbalon.model.ErrorResponse;
+import edu.javeriana.touresbalon.pago.model.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

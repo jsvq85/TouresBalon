@@ -3,6 +3,9 @@ package edu.javeriana.touresbalon.pago.entities;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+import lombok.*;
+import javax.persistence.*;
+
 @Entity
 @Builder(toBuilder = true)
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
@@ -11,6 +14,9 @@ import java.sql.Timestamp;
 @Getter
 @Table(name = "ORDEN")
 @Data
+
+
+
 public class Orden {
 
     @Id

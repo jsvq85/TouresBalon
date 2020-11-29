@@ -1,5 +1,8 @@
 package edu.javeriana.touresbalon.pago.entities;
 
+import lombok.*;
+import javax.persistence.*;
+
 @Entity
 @Builder(toBuilder = true)
 @AllArgsConstructor(access = AccessLevel.PACKAGE)

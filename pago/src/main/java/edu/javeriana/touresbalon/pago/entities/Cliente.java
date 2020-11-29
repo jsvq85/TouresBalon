@@ -1,6 +1,8 @@
 package edu.javeriana.touresbalon.pago.entities;
 
 import java.util.List;
+import lombok.*;
+import javax.persistence.*;
 
 @Entity
 @Builder(toBuilder = true)

@@ -2,13 +2,18 @@ package edu.javeriana.touresbalon.pago.service.impl;
 
 import edu.javeriana.touresbalon.pago.clients.AGenericClient;
 import edu.javeriana.touresbalon.pago.clients.ClientFactory;
+import edu.javeriana.touresbalon.pago.clients.ProveedorAPIClient;
+import edu.javeriana.touresbalon.pago.clients.UsuarioAPIClient;
+import edu.javeriana.touresbalon.pago.dto.UsuarioDTO;
 import edu.javeriana.touresbalon.pago.entities.Usuario;
 import edu.javeriana.touresbalon.pago.exceptions.PaymentBadRequestException;
 import edu.javeriana.touresbalon.pago.exceptions.PaymentNotFoundException;
+import edu.javeriana.touresbalon.pago.kafka.KafkaProducer;
 import edu.javeriana.touresbalon.pago.model.*;
 import edu.javeriana.touresbalon.pago.repository.UsuarioRepository;
 import edu.javeriana.touresbalon.pago.service.ConvenioService;
 import edu.javeriana.touresbalon.pago.service.PagoService;
+import edu.javeriana.touresbalon.pago.utils.JsonConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,9 +23,13 @@ import java.util.Optional;
 public class PagoServiceImpl implements PagoService {
 
   @Autowired
-  private UsuarioRepository usuarioRepository;
+  private UsuarioAPIClient usuarioAPIClient;
+  @Autowired
+  private ProveedorAPIClient proveedorAPIClient;
   @Autowired
   private ConvenioService convenioService;
+  @Autowired
+  private KafkaProducer kafkaProducer;
 
   public PagoServiceImpl() {
 
@@ -78,18 +87,19 @@ public class PagoServiceImpl implements PagoService {
     sd.setRequestPayload(fillPayload(sd.getRequestPayload(), data.getReferencia(), data.getValor()));
     sd.setServiceUrl(fillPayload(sd.getServiceUrl(), data.getReferencia(), data.getValor()));
     AGenericClient client = ClientFactory.getClient(sd.getServiceType());
-    Optional<Usuario> userData = usuarioRepository.findById(data.getIdUsuario());
+    UsuarioDTO userData = usuarioAPIClient.getUsuarioById(data.getIdUsuario());
     NotificationObject info = new NotificationObject();
     info.setServicio("PAGAR");
-    info.setEmail(userData.get().getEMail());
-    info.setIdUsuario(userData.get().getIdUsuario());
-    info.setNombreUsuario(userData.get().getNombre()+" "+userData.get().getApellido());
+    info.setEmail(userData.getEmail());
+    info.setIdUsuario(userData.getId());
+    info.setNombreUsuario(userData.getName()+" "+userData.getLastName());
     info.setIdConvenio(data.getIdConvenio());
     info.setReferencia(data.getReferencia());
     info.setValor(data.getValor());
     info.setNroTransaccion(1);
     rta = client.callService(sd);
     info.setMensaje(rta.getMensaje());
+    kafkaProducer.sendMessage(JsonConverter.toJSON(info));
     return rta;
   }
 
@@ -103,18 +113,19 @@ public class PagoServiceImpl implements PagoService {
     sd.setRequestPayload(fillPayload(sd.getRequestPayload(), data.getReferencia(), data.getValor()));
     sd.setServiceUrl(fillPayload(sd.getServiceUrl(), data.getReferencia(), data.getValor()));
     AGenericClient client = ClientFactory.getClient(sd.getServiceType());
-    Optional<Usuario> userData = usuarioRepository.findById(data.getIdUsuario());
+    UsuarioDTO userData = usuarioAPIClient.getUsuarioById(data.getIdUsuario());
     NotificationObject info = new NotificationObject();
     info.setServicio("COMPENSAR");
-    info.setEmail(userData.get().getEMail());
-    info.setIdUsuario(userData.get().getIdUsuario());
-    info.setNombreUsuario(userData.get().getNombre()+" "+userData.get().getApellido());
+    info.setEmail(userData.getEmail());
+    info.setIdUsuario(userData.getId());
+    info.setNombreUsuario(userData.getName()+" "+userData.getLastName());
     info.setIdConvenio(data.getIdConvenio());
     info.setReferencia(data.getReferencia());
     info.setValor(data.getValor());
     info.setNroTransaccion(1);
     rta = client.callService(sd);
     info.setMensaje(rta.getMensaje());
+    kafkaProducer.sendMessage(JsonConverter.toJSON(info));
     return rta;
   }
 

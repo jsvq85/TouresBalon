@@ -1,7 +1,7 @@
 package edu.javeriana.touresbalon.pago.service;
 
-import edu.javeriana.touresbalon.model.ConvenioObject;
-import edu.javeriana.touresbalon.model.ConvenioResponse;
+import edu.javeriana.touresbalon.pago.model.ConvenioObject;
+import edu.javeriana.touresbalon.pago.model.ConvenioResponse;
 
 import java.util.List;
 

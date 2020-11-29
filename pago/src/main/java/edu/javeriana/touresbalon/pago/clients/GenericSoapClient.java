@@ -1,8 +1,8 @@
 package edu.javeriana.touresbalon.pago.clients;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import edu.javeriana.touresbalon.model.PagoResponse;
-import edu.javeriana.touresbalon.model.ServiceDescription;
+import edu.javeriana.touresbalon.pago.model.PagoResponse;
+import edu.javeriana.touresbalon.pago.model.ServiceDescription;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;

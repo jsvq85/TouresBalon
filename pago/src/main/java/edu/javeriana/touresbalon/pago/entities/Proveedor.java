@@ -3,6 +3,9 @@ package edu.javeriana.touresbalon.pago.entities;
 import java.sql.Timestamp;
 import java.util.List;
 
+import lombok.*;
+import javax.persistence.*;
+
 @Entity
 @Builder(toBuilder = true)
 @AllArgsConstructor(access = AccessLevel.PACKAGE)

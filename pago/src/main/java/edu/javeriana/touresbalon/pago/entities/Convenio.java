@@ -1,7 +1,9 @@
 package edu.javeriana.touresbalon.pago.entities;
 
-import edu.javeriana.touresbalon.dto.ConvenioDTO;
-import edu.javeriana.touresbalon.model.ConvenioObject;
+import edu.javeriana.touresbalon.pago.dto.ConvenioDTO;
+import edu.javeriana.touresbalon.pago.model.ConvenioObject;
+import lombok.*;
+import javax.persistence.*;
 import lombok.Data;
 
 @SqlResultSetMappings(value = {

@@ -3,7 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/TouresBalonLocal.iml" filepath="$PROJECT_DIR$/TouresBalonLocal.iml" />
+      <module fileurl="file://$PROJECT_DIR$/api-gateway/api-gateway.iml" filepath="$PROJECT_DIR$/api-gateway/api-gateway.iml" />
       <module fileurl="file://$PROJECT_DIR$/discovery/discovery.iml" filepath="$PROJECT_DIR$/discovery/discovery.iml" />
+      <module fileurl="file://$PROJECT_DIR$/notificacion/notificacion.iml" filepath="$PROJECT_DIR$/notificacion/notificacion.iml" />
       <module fileurl="file://$PROJECT_DIR$/pago/pago.iml" filepath="$PROJECT_DIR$/pago/pago.iml" />
       <module fileurl="file://$PROJECT_DIR$/producto/producto.iml" filepath="$PROJECT_DIR$/producto/producto.iml" />
       <module fileurl="file://$PROJECT_DIR$/proveedor/proveedor.iml" filepath="$PROJECT_DIR$/proveedor/proveedor.iml" />

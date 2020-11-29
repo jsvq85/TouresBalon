@@ -1,6 +1,8 @@
 package edu.javeriana.touresbalon.pago.entities;
 
-import edu.javeriana.touresbalon.model.ServiceDescription;
+import edu.javeriana.touresbalon.pago.model.ServiceDescription;
+import lombok.*;
+import javax.persistence.*;
 import lombok.Data;
 
 @SqlResultSetMapping(name = "configurationMapping",

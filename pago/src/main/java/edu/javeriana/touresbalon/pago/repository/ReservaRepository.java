@@ -1,6 +1,6 @@
 package edu.javeriana.touresbalon.pago.repository;
 
-import edu.javeriana.touresbalon.entities.Reserva;
+import edu.javeriana.touresbalon.pago.entities.Reserva;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

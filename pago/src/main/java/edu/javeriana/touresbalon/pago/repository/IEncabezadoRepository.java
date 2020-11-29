@@ -1,7 +1,7 @@
 package edu.javeriana.touresbalon.pago.repository;
 
-import edu.javeriana.touresbalon.entities.Encabezado;
-import edu.javeriana.touresbalon.model.HeaderService;
+import edu.javeriana.touresbalon.pago.entities.Encabezado;
+import edu.javeriana.touresbalon.pago.model.HeaderService;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;

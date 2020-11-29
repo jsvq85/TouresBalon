@@ -1,6 +1,6 @@
 package edu.javeriana.touresbalon.pago.model;
 
-import edu.javeriana.touresbalon.dto.ConvenioDTO;
+import edu.javeriana.touresbalon.pago.dto.ConvenioDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

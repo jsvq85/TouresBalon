@@ -7,6 +7,9 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
+import lombok.*;
+import javax.persistence.*;
+
 @Entity
 @Table(name = "PRODUCTO")
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
@@ -57,7 +60,7 @@ public class Producto {
     )
     private List<Reserva> reservas;
 
-    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="idProveedor", scope=Proveedor.class)
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "idProveedor", scope = Proveedor.class)
     @ManyToOne
     @JoinColumn(name = "idProveedor", referencedColumnName = "ID_PROVEEDOR")
     private Proveedor proveedor;

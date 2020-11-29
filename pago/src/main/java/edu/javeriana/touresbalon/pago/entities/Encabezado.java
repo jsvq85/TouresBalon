@@ -1,6 +1,8 @@
 package edu.javeriana.touresbalon.pago.entities;
 
-import edu.javeriana.touresbalon.model.HeaderService;
+import edu.javeriana.touresbalon.pago.model.HeaderService;
+import lombok.*;
+import javax.persistence.*;
 import lombok.Data;
 
 @SqlResultSetMapping(name = "encabezadoMapping",

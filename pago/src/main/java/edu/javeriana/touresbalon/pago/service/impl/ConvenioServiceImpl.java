@@ -1,12 +1,12 @@
 package edu.javeriana.touresbalon.pago.service.impl;
 
-import edu.javeriana.touresbalon.exceptions.ConvenioNotFoundException;
-import edu.javeriana.touresbalon.model.ConvenioObject;
-import edu.javeriana.touresbalon.model.ConvenioResponse;
-import edu.javeriana.touresbalon.repository.ConvenioRepository;
-import edu.javeriana.touresbalon.repository.IConfiguracionRepository;
-import edu.javeriana.touresbalon.repository.IEncabezadoRepository;
-import edu.javeriana.touresbalon.service.ConvenioService;
+import edu.javeriana.touresbalon.pago.exceptions.ConvenioNotFoundException;
+import edu.javeriana.touresbalon.pago.model.ConvenioObject;
+import edu.javeriana.touresbalon.pago.model.ConvenioResponse;
+import edu.javeriana.touresbalon.pago.repository.ConvenioRepository;
+import edu.javeriana.touresbalon.pago.repository.IConfiguracionRepository;
+import edu.javeriana.touresbalon.pago.repository.IEncabezadoRepository;
+import edu.javeriana.touresbalon.pago.service.ConvenioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

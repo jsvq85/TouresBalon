@@ -2,6 +2,7 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
       <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
@@ -10,10 +11,14 @@
         <module name="pago" />
         <module name="producto" />
         <module name="proveedor" />
+        <module name="api-gateway" />
+        <module name="notificacion" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="api-gateway" target="11" />
       <module name="discovery" target="11" />
+      <module name="notificacion" target="11" />
       <module name="pago" target="11" />
       <module name="producto" target="11" />
       <module name="proveedor" target="11" />
@@ -21,7 +26,9 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="api-gateway" options="-parameters" />
       <module name="discovery" options="-parameters" />
+      <module name="notificacion" options="-parameters" />
       <module name="pago" options="-parameters" />
       <module name="producto" options="-parameters" />
       <module name="proveedor" options="-parameters" />

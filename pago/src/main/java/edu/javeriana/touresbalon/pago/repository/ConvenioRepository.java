@@ -1,8 +1,8 @@
 package edu.javeriana.touresbalon.pago.repository;
 
-import edu.javeriana.touresbalon.dto.ConvenioDTO;
-import edu.javeriana.touresbalon.entities.Convenio;
-import edu.javeriana.touresbalon.model.ConvenioObject;
+import edu.javeriana.touresbalon.pago.dto.ConvenioDTO;
+import edu.javeriana.touresbalon.pago.entities.Convenio;
+import edu.javeriana.touresbalon.pago.model.ConvenioObject;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
