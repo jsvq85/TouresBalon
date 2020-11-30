@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PagoRequest {
-  private Integer idUsuario;
+
+  private PaymentObject payment;
+  private UsuarioObject user;
   private Integer idConvenio;
   private Integer referencia;
   private Integer valor;

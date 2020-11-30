@@ -87,19 +87,18 @@ public class PagoServiceImpl implements PagoService {
     sd.setRequestPayload(fillPayload(sd.getRequestPayload(), data.getReferencia(), data.getValor()));
     sd.setServiceUrl(fillPayload(sd.getServiceUrl(), data.getReferencia(), data.getValor()));
     AGenericClient client = ClientFactory.getClient(sd.getServiceType());
-    UsuarioDTO userData = usuarioAPIClient.getUsuarioById(data.getIdUsuario());
     NotificationObject info = new NotificationObject();
     info.setServicio("PAGAR");
-    info.setEmail(userData.getEmail());
-    info.setIdUsuario(userData.getId());
-    info.setNombreUsuario(userData.getName()+" "+userData.getLastName());
+    info.setEmail(data.getUser().getEmail());
+    info.setIdUsuario(data.getUser().getId());
+    info.setNombreUsuario(data.getUser().getFirstName()+" "+data.getUser().getLastName());
     info.setIdConvenio(data.getIdConvenio());
     info.setReferencia(data.getReferencia());
     info.setValor(data.getValor());
     info.setNroTransaccion(1);
     rta = client.callService(sd);
     info.setMensaje(rta.getMensaje());
-    kafkaProducer.sendMessage(JsonConverter.toJSON(info));
+    //kafkaProducer.sendMessage(JsonConverter.toJSON(info));
     return rta;
   }
 
@@ -113,19 +112,18 @@ public class PagoServiceImpl implements PagoService {
     sd.setRequestPayload(fillPayload(sd.getRequestPayload(), data.getReferencia(), data.getValor()));
     sd.setServiceUrl(fillPayload(sd.getServiceUrl(), data.getReferencia(), data.getValor()));
     AGenericClient client = ClientFactory.getClient(sd.getServiceType());
-    UsuarioDTO userData = usuarioAPIClient.getUsuarioById(data.getIdUsuario());
     NotificationObject info = new NotificationObject();
     info.setServicio("COMPENSAR");
-    info.setEmail(userData.getEmail());
-    info.setIdUsuario(userData.getId());
-    info.setNombreUsuario(userData.getName()+" "+userData.getLastName());
+    info.setEmail(data.getUser().getEmail());
+    info.setIdUsuario(data.getUser().getId());
+    info.setNombreUsuario(data.getUser().getFirstName()+" "+data.getUser().getLastName());
     info.setIdConvenio(data.getIdConvenio());
     info.setReferencia(data.getReferencia());
     info.setValor(data.getValor());
     info.setNroTransaccion(1);
     rta = client.callService(sd);
     info.setMensaje(rta.getMensaje());
-    kafkaProducer.sendMessage(JsonConverter.toJSON(info));
+    //kafkaProducer.sendMessage(JsonConverter.toJSON(info));
     return rta;
   }
 
