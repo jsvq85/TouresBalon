@@ -11,7 +11,6 @@ public class PagoRequest {
 
   private PaymentObject payment;
   private UsuarioObject user;
-  private Integer idConvenio;
   private Integer referencia;
   private Integer valor;
 }

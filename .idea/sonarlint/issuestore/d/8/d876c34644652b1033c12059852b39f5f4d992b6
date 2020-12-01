@@ -1,0 +1,8 @@
+
+S	java:S106"9Replace this use of System.out or System.err by a logger.(Ñà‘Ëûÿÿÿÿ
+S	java:S106"9Replace this use of System.out or System.err by a logger.(ÅÁ£úÿÿÿÿ
+S	java:S1065"9Replace this use of System.out or System.err by a logger.(­±ŠÑûÿÿÿÿ
+N	java:S106-"9Replace this use of System.out or System.err by a logger.(‰æ“ô
+S	java:S106!"9Replace this use of System.out or System.err by a logger.(œø‚©úÿÿÿÿ
+
+java:S5527"wEnable server hostname verification on this SSL/TLS connection, by setting "mail.smtp.ssl.checkserveridentity" to true.(’ß‡ƒ

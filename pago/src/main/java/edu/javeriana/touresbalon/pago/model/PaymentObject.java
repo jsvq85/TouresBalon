@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PaymentObject {
     private String cardType;
+    private Integer idConvenio;
     private long cardNumber;
     private String cardDate;
     private int cvv;

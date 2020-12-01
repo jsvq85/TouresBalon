@@ -47,6 +47,7 @@ public abstract class AGenericClient {
             result.setReferencia(processPath(rootNode, pathReference));
             result.setValor(processPath(rootNode, pathValue));
             result.setMensaje(processPath(rootNode, pathMessage));
+            result.setNroTransaccion(processPath(rootNode, "nroTransaccion"));
             return result;
         } catch (JsonProcessingException e) {
             e.printStackTrace();

@@ -1,15 +1,15 @@
 
-H
-java:S1168#"+Return an empty collection instead of null.(¥¹ï8¼–«Øà.
-M
-java:S1128"0Remove this unused import 'java.util.ArrayList'.(÷‰îƒ8î¼ªØà.
-T
-java:S1128"2Remove this unused import 'java.util.Collections'.(¢³ïÓşÿÿÿÿ8î¼ªØà.
-v
-java:S1128"TRemove this unused import 'edu.javeriana.touresbalon.pago.clients.UsuarioAPIClient'.(´Æ¡„úÿÿÿÿ8ß™ªØà.
 `
 java:S1128">Remove this unused import 'com.google.gson.reflect.TypeToken'.(İªıñøÿÿÿÿ8î¼ªØà.
-N
-java:S1128"1Remove this unused import 'com.google.gson.Gson'.(–§8î¼ªØà.
+M
+java:S1128"0Remove this unused import 'java.util.ArrayList'.(÷‰îƒ8î¼ªØà.
+v
+java:S1128"TRemove this unused import 'edu.javeriana.touresbalon.pago.clients.UsuarioAPIClient'.(´Æ¡„úÿÿÿÿ8ß™ªØà.
+T
+java:S1128"2Remove this unused import 'java.util.Collections'.(¢³ïÓşÿÿÿÿ8î¼ªØà.
 Z
 java:S1128"8Remove this unused import 'com.google.gson.GsonBuilder'.(”«à¬ÿÿÿÿÿ8î¼ªØà.
+N
+java:S1128"1Remove this unused import 'com.google.gson.Gson'.(–§8î¼ªØà.
+H
+java:S1168#"+Return an empty collection instead of null.(¥¹ï8¼–«Øà.

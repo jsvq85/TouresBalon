@@ -1,0 +1,13 @@
+
+q
+java:S1128"ORemove this unused import 'edu.javeriana.touresbalon.pago.utils.JsonConverter'.(’¢ƒÊúÿÿÿÿ8”îì¬á.
+m
+java:S11926"KDefine a constant instead of duplicating this literal "parameters" 3 times.(Õƒ„üÿÿÿÿ8‹‘«¬á.
+s
+java:S3008 "QRename this field "LOGGER" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ùĞ’âúÿÿÿÿ8³çÎá.
+v
+java:S1128"TRemove this unused import 'org.springframework.web.client.HttpServerErrorException'.(éåŠùÿÿÿÿ8Â¾”‘á.
+\
+java:S1854-"?Remove this useless assignment to local variable "usuarioList".(Ñ­¤8‹‘«¬á.
+q
+java:S1128"TRemove this unused import 'edu.javeriana.touresbalon.pago.model.NotificationObject'.(™ƒóÚ8”îì¬á.
