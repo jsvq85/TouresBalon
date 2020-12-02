@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ProductoReservationDTO {
 
-    private Integer id;
+    private String id;
     private Integer productId;
     private Integer providerId;
     private Integer quantity;

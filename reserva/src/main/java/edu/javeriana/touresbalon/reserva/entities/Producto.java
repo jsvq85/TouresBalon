@@ -20,6 +20,9 @@ public class Producto {
     @Column(name = "ID_PRODUCTO")
     private int idProducto;
 
+    @Column(name = "ID_PROVEEDOR")
+    private int idProveedor;
+
     @ManyToOne
     @JoinColumn(name = "idReserva", referencedColumnName = "ID_RESERVA", nullable = false)
     private Reserva reserva;

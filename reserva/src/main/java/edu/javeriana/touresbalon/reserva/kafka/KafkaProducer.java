@@ -1,6 +1,7 @@
 package edu.javeriana.touresbalon.reserva.kafka;
 
 import edu.javeriana.touresbalon.reserva.exceptions.InternalException;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;

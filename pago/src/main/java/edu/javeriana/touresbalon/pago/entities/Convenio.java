@@ -34,17 +34,17 @@ import lombok.Data;
 @NamedNativeQueries(value = {
         @NamedNativeQuery(name = "convenio.queryById",
                 query = "Select partner_id as partnerId, partner_name as partnerName" +
-                        "  From ingsoft.convenio" +
+                        "  From pago.convenio" +
                         "  where partner_id = :partnerId",
                 resultSetMapping = "convenioMapping"),
         @NamedNativeQuery(name = "convenio.queryByName",
                 query = "Select partner_id as partnerId, partner_name as partnerName" +
-                        "  From ingsoft.convenio" +
+                        "  From pago.convenio" +
                         "  where coalesce(lower(partner_name), '') like concat('%', lower(:partnerName), '%')",
                 resultSetMapping = "convenioMapping"),
         @NamedNativeQuery(name = "convenio2.queryById",
                 query = "Select partner_id as idConvenio, partner_name as nombre, description as descripcion" +
-                        "  From ingsoft.convenio" +
+                        "  From pago.convenio" +
                         "  where partner_id = :partnerId",
                 resultSetMapping = "convenioMapping2")
 })

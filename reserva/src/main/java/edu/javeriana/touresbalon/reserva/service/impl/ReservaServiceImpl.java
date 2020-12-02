@@ -2,16 +2,23 @@ package edu.javeriana.touresbalon.reserva.service.impl;
 
 import edu.javeriana.touresbalon.reserva.client.PagoAPIClient;
 import edu.javeriana.touresbalon.reserva.dto.*;
+import edu.javeriana.touresbalon.reserva.entities.Producto;
 import edu.javeriana.touresbalon.reserva.entities.Reserva;
 import edu.javeriana.touresbalon.reserva.exceptions.NotFoundException;
+import edu.javeriana.touresbalon.reserva.exceptions.RestClientException;
 import edu.javeriana.touresbalon.reserva.kafka.KafkaProducer;
+import edu.javeriana.touresbalon.reserva.repository.ProductoRepository;
 import edu.javeriana.touresbalon.reserva.repository.ReservaRepository;
 import edu.javeriana.touresbalon.reserva.service.ReservaService;
 import edu.javeriana.touresbalon.reserva.utils.JsonConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,6 +27,8 @@ public class ReservaServiceImpl implements ReservaService {
 
     @Autowired
     private ReservaRepository reservaRepository;
+    @Autowired
+    private ProductoRepository productoRepository;
     @Autowired
     private PagoAPIClient pagoAPIClient;
     @Autowired
@@ -31,23 +40,58 @@ public class ReservaServiceImpl implements ReservaService {
         //Se realiza el pago de la reserva
         PagoRequest pagoRequest = new PagoRequest(reservaRequest.getPayment(),reservaRequest.getUsuario(),
                 reservaRequest.getReferencia(),reservaRequest.getTotal());
-        PagoResponse pagoResponse = pagoAPIClient.createPayment(pagoRequest);
+        PagoResponse pagoResponse = realizarPago(pagoRequest);
         //Se realiza la orden por cada uno de los productos de la lista
         for (ProductoDTO producto:reservaRequest.getProductList()) {
             kafkaProducer.sendMessage(JsonConverter.toJSON(ProductoReservationDTO.builder().
+                    id(java.util.UUID.randomUUID().toString()).
                     productId(producto.getId()).providerId(producto.getProviderId()).
-                    quantity(producto.getNumber()).build()));
+                    quantity(producto.getNumber()).type("COMMAND_CREATE_RESERVATION").build()));
         }
-        Reserva reserva = new Reserva();
-        //reservaRepository.save(reserva);
-        ReservaResponse reservaResponse = new ReservaResponse();
-        reservaResponse.setPagoResponse(pagoResponse);
-        reservaResponse.setUsuario(reservaRequest.getUsuario());
-        reservaResponse.setReservaStatus("ACEPTADA");
-        return reservaResponse;
+        guardarReserva(reservaRequest, pagoResponse);
+
+        return ReservaResponse.builder().pagoResponse(pagoResponse).usuario(reservaRequest.getUsuario()).
+                productList(reservaRequest.getProductList()).reservaStatus("IN_PROCESS").build();
     }
+
+    public PagoResponse realizarPago(PagoRequest pagoRequest){
+
+        try {
+            PagoResponse pagoResponse = pagoAPIClient.createPayment(pagoRequest);
+            return pagoResponse;
+        }catch(Exception e) {
+            throw new RestClientException(e.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }
+
+    public PagoResponse compensarPago(PagoRequest pagoRequest){
+
+        try {
+            PagoResponse pagoResponse = pagoAPIClient.compensatePayment(pagoRequest);
+            return pagoResponse;
+        }catch(Exception e) {
+            throw new RestClientException(e.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }
+
+    public void guardarReserva(ReservaRequest reservaRequest, PagoResponse pagoResponse){
+
+        Reserva reserva = Reserva.builder().estado(true).fechaRegistro(new Timestamp(System.currentTimeMillis())).
+                idCliente(reservaRequest.getUsuario().getId()).idPago(Long.parseLong(pagoResponse.getReferencia())).build();
+        reservaRepository.save(reserva);
+
+        List<Producto> productoList = new ArrayList<>();
+        for (ProductoDTO productoDTO:reservaRequest.getProductList()) {
+            Producto producto = Producto.builder().idProducto(productoDTO.getId()).
+                    idProveedor(productoDTO.getProviderId()).reserva(reserva).build();
+            productoList.add(producto);
+        }
+        productoRepository.saveAll(productoList);
+    }
+
     @Override
     public void eliminarReserva(Reserva reserva) {
+
         reservaRepository.delete(reserva);
     }
 
