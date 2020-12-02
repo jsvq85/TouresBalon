@@ -36,7 +36,7 @@ public class KafkaClient {
             new Authenticator() {
               @Override
               protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication("jsvillanueva@javeriana.edu.co", "Ju22639229*");
+                return new PasswordAuthentication("jsvillanueva@javeriana.edu.co", "");
               }
             }
     );
