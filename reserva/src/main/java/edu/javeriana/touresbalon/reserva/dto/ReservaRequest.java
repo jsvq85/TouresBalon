@@ -14,5 +14,6 @@ public class ReservaRequest {
     private UsuarioDTO usuario;
     private PaymentDTO payment;
     private List<ProductoDTO> productList;
+    private Integer referencia;
     private Integer total;
 }

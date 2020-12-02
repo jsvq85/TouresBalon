@@ -19,6 +19,7 @@ public class PagoRequest {
     this.payment = payment;
     this.user = usuario;
     this.valor = total;
+    this.referencia = referencia;
 
   }
 }

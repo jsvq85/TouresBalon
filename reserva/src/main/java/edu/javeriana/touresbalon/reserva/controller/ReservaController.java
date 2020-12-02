@@ -34,8 +34,7 @@ public class ReservaController {
             @ApiResponse(responseCode = "500", description = "Error guardando reserva",
                     content = @Content)})
     @PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> crearAlojamiento(@RequestBody ReservaRequest reservaRequest) {
-
+    public ResponseEntity<?> crearReserva(@RequestBody ReservaRequest reservaRequest) {
         ReservaResponse result = reservaService.crearReserva(reservaRequest);
         return ResponseEntity.ok(result);
     }
@@ -52,7 +51,7 @@ public class ReservaController {
             @ApiResponse(responseCode = "500", description = "Error obteniendo el reserva",
                     content = @Content)})
     @GetMapping(value = "/{reservaId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> consultarAlojamiento(@PathVariable @NotNull String reservaid) {
+    public ResponseEntity<?> consultaReserva(@PathVariable @NotNull String reservaid) {
 
         Optional<Reserva> result = reservaService.consultarReserva(Integer.valueOf(reservaid));
         return ResponseEntity.ok(result);
@@ -70,7 +69,7 @@ public class ReservaController {
             @ApiResponse(responseCode = "500", description = "Error obteniendo lista de reservas",
                     content = @Content)})
     @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> consultarListaAlojamientos() {
+    public ResponseEntity<?> consultarListaReserva() {
 
         Iterable<Reserva> result = reservaService.consultarListaReserva();
         return ResponseEntity.ok(result);
@@ -91,7 +90,7 @@ public class ReservaController {
     public ResponseEntity<?> eliminarReserva(@RequestBody Reserva reserva) {
 
         reservaService.eliminarReserva(reserva);
-        return ResponseEntity.ok("Alojamiento eliminado correctamente");
+        return ResponseEntity.ok("Reserva eliminado correctamente");
     }
 
 }

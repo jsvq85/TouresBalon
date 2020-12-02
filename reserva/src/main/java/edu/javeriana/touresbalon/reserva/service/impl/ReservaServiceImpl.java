@@ -29,7 +29,8 @@ public class ReservaServiceImpl implements ReservaService {
     public ReservaResponse crearReserva(ReservaRequest reservaRequest) {
 
         //Se realiza el pago de la reserva
-        PagoRequest pagoRequest = new PagoRequest(reservaRequest.getPayment(),reservaRequest.getUsuario(),reservaRequest.getTotal());
+        PagoRequest pagoRequest = new PagoRequest(reservaRequest.getPayment(),reservaRequest.getUsuario(),
+                reservaRequest.getReferencia(),reservaRequest.getTotal());
         PagoResponse pagoResponse = pagoAPIClient.createPayment(pagoRequest);
         //Se realiza la orden por cada uno de los productos de la lista
         for (ProductoDTO producto:reservaRequest.getProductList()) {
