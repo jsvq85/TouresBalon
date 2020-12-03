@@ -22,24 +22,12 @@ public class Reserva {
     private int idReserva;
 
     @Basic
-    @Column(name = "TIPO_RESERVA")
-    private String tipoReserva;
-
-    @Basic
     @Column(name = "FECHA_REGISTRO")
     private Timestamp fechaRegistro;
 
     @Basic
-    @Column(name = "FECHA_INICIO")
-    private Timestamp fechaInicio;
-
-    @Basic
-    @Column(name = "FECHA_FIN")
-    private Timestamp fechaFin;
-
-    @Basic
     @Column(name = "ESTADO")
-    private boolean estado;
+    private String estado;
 
     @Basic
     @Column(name = "COMENTARIOS")
@@ -53,8 +41,12 @@ public class Reserva {
     private long idPago;
 
     @Basic
-    @Column(name = "ID_CLIENTE")
-    private long idCliente;
+    @Column(name = "VALOR")
+    private long valor;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "ID", nullable = false)
+    private Usuario usuario;
 
 
 }

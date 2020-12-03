@@ -9,11 +9,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ProductoReservationDTO {
+public class ProductoReservationInputDTO {
 
     private String id;
     private Integer productId;
     private Integer providerId;
-    private Integer quantity;
     private String type;
 }

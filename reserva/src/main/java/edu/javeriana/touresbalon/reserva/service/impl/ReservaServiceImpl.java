@@ -4,6 +4,7 @@ import edu.javeriana.touresbalon.reserva.client.PagoAPIClient;
 import edu.javeriana.touresbalon.reserva.dto.*;
 import edu.javeriana.touresbalon.reserva.entities.Producto;
 import edu.javeriana.touresbalon.reserva.entities.Reserva;
+import edu.javeriana.touresbalon.reserva.entities.Usuario;
 import edu.javeriana.touresbalon.reserva.exceptions.NotFoundException;
 import edu.javeriana.touresbalon.reserva.exceptions.RestClientException;
 import edu.javeriana.touresbalon.reserva.kafka.KafkaProducer;
@@ -43,13 +44,19 @@ public class ReservaServiceImpl implements ReservaService {
         PagoResponse pagoResponse = realizarPago(pagoRequest);
         //Se realiza la orden por cada uno de los productos de la lista
         for (ProductoDTO producto:reservaRequest.getProductList()) {
-            kafkaProducer.sendMessage(JsonConverter.toJSON(ProductoReservationDTO.builder().
+            kafkaProducer.sendProveedoresMessage(JsonConverter.toJSON(ProductoReservationOutputDTO.builder().
                     id(java.util.UUID.randomUUID().toString()).
                     productId(producto.getId()).providerId(producto.getProviderId()).
                     quantity(producto.getNumber()).type("COMMAND_CREATE_RESERVATION").build()));
         }
-        guardarReserva(reservaRequest, pagoResponse);
 
+        guardarReserva(reservaRequest, pagoResponse);
+        kafkaProducer.sendNotificacionesMessage(JsonConverter.toJSON(NotificationObject.builder().
+                email(reservaRequest.getUsuario().getEmail()).
+                nombreUsuario(reservaRequest.getUsuario().getFirstName() + reservaRequest.getUsuario().getLastName()).
+                valor(Integer.valueOf(pagoResponse.getValor())).
+                referencia(Integer.valueOf(pagoResponse.getReferencia())).
+                mensaje("Le informamos que su reserva esta en proceso").build()));
         return ReservaResponse.builder().pagoResponse(pagoResponse).usuario(reservaRequest.getUsuario()).
                 productList(reservaRequest.getProductList()).reservaStatus("IN_PROCESS").build();
     }
@@ -76,13 +83,16 @@ public class ReservaServiceImpl implements ReservaService {
 
     public void guardarReserva(ReservaRequest reservaRequest, PagoResponse pagoResponse){
 
-        Reserva reserva = Reserva.builder().estado(true).fechaRegistro(new Timestamp(System.currentTimeMillis())).
-                idCliente(reservaRequest.getUsuario().getId()).idPago(Long.parseLong(pagoResponse.getReferencia())).build();
+        Usuario usuario = Usuario.builder().id(reservaRequest.getUsuario().getId()).email(reservaRequest.getUsuario().getEmail()).
+                firstName(reservaRequest.getUsuario().getFirstName()).lastName(reservaRequest.getUsuario().getLastName()).build();
+
+        Reserva reserva = Reserva.builder().estado("IN_PROCESS").fechaRegistro(new Timestamp(System.currentTimeMillis())).
+                usuario(usuario).idPago(Long.parseLong(pagoResponse.getReferencia())).valor(Long.parseLong(pagoResponse.getValor())).build();
         reservaRepository.save(reserva);
 
         List<Producto> productoList = new ArrayList<>();
         for (ProductoDTO productoDTO:reservaRequest.getProductList()) {
-            Producto producto = Producto.builder().idProducto(productoDTO.getId()).
+            Producto producto = Producto.builder().idProducto(productoDTO.getId()).estado("IN_PROCESS").
                     idProveedor(productoDTO.getProviderId()).reserva(reserva).build();
             productoList.add(producto);
         }
