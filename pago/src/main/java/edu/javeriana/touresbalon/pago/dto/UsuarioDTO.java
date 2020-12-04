@@ -4,6 +4,8 @@ import com.google.gson.annotations.SerializedName;
 import lombok.Builder;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
+
 @Builder
 @Data
 public class UsuarioDTO {
@@ -16,5 +18,7 @@ public class UsuarioDTO {
     private String lastName;
     @SerializedName("email")
     private String email;
+    @SerializedName("categoria")
+    private String categoria;
 
 }

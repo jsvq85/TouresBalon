@@ -1,5 +1,6 @@
 package edu.javeriana.touresbalon.reserva.service.impl;
 
+import edu.javeriana.touresbalon.reserva.client.BRMAPIClient;
 import edu.javeriana.touresbalon.reserva.client.PagoAPIClient;
 import edu.javeriana.touresbalon.reserva.dto.*;
 import edu.javeriana.touresbalon.reserva.entities.Producto;
@@ -36,55 +37,69 @@ public class ReservaServiceImpl implements ReservaService {
     @Autowired
     private PagoAPIClient pagoAPIClient;
     @Autowired
+    private BRMAPIClient brmapiClient;
+    @Autowired
     private KafkaProducer kafkaProducer;
 
     @Override
     public ReservaResponse crearReserva(ReservaRequest reservaRequest) {
 
         //Se realiza el pago de la reserva
-        PagoRequest pagoRequest = new PagoRequest(reservaRequest.getPayment(),reservaRequest.getUsuario(),
-                reservaRequest.getReferencia(),reservaRequest.getTotal());
-        PagoResponse pagoResponse = realizarPago(pagoRequest);
-        //Se realiza la orden por cada uno de los productos de la lista
-        for (ProductoDTO producto:reservaRequest.getProductList()) {
-            kafkaProducer.sendProveedoresMessage(JsonConverter.toJSON(ProductoReservationOutputDTO.builder().
-                    id(java.util.UUID.randomUUID().toString()).
-                    productId(producto.getId()).providerId(producto.getProviderId()).
-                    quantity(producto.getNumber()).type("COMMAND_CREATE_RESERVATION").build()));
-        }
+        boolean approval = brmapiClient.checkApproval(reservaRequest.getTotal(), reservaRequest.getUsuario().getCategoria());
+        if (approval) {
+            PagoRequest pagoRequest = new PagoRequest(reservaRequest.getPayment(), reservaRequest.getUsuario(),
+                    reservaRequest.getReferencia(), reservaRequest.getTotal());
+            PagoResponse pagoResponse = realizarPago(pagoRequest);
+            //Se realiza la orden por cada uno de los productos de la lista
+            for (ProductoDTO producto : reservaRequest.getProductList()) {
+                kafkaProducer.sendProveedoresMessage(JsonConverter.toJSON(ProductoReservationOutputDTO.builder().
+                        id(java.util.UUID.randomUUID().toString()).
+                        productId(producto.getId()).providerId(producto.getProviderId()).
+                        quantity(producto.getNumber()).type("COMMAND_CREATE_RESERVATION").build()));
+            }
 
-        guardarReserva(reservaRequest, pagoResponse);
-        kafkaProducer.sendNotificacionesMessage(JsonConverter.toJSON(NotificationObject.builder().
-                email(reservaRequest.getUsuario().getEmail()).
-                nombreUsuario(reservaRequest.getUsuario().getFirstName() + reservaRequest.getUsuario().getLastName()).
-                valor(Integer.valueOf(pagoResponse.getValor())).
-                referencia(Integer.valueOf(pagoResponse.getReferencia())).
-                mensaje("Le informamos que su reserva esta en proceso").build()));
-        return ReservaResponse.builder().pagoResponse(pagoResponse).usuario(reservaRequest.getUsuario()).
-                productList(reservaRequest.getProductList()).reservaStatus("IN_PROCESS").build();
+            guardarReserva(reservaRequest, pagoResponse);
+            kafkaProducer.sendNotificacionesMessage(JsonConverter.toJSON(NotificationObject.builder().
+                    email(reservaRequest.getUsuario().getEmail()).
+                    nombreUsuario(reservaRequest.getUsuario().getFirstName() + reservaRequest.getUsuario().getLastName()).
+                    valor(Integer.valueOf(pagoResponse.getValor())).
+                    referencia(Integer.valueOf(pagoResponse.getReferencia())).
+                    mensaje("Le informamos que su reserva esta en proceso").build()));
+            return ReservaResponse.builder().pagoResponse(pagoResponse).usuario(reservaRequest.getUsuario()).
+                    productList(reservaRequest.getProductList()).reservaStatus("IN_PROCESS").build();
+        }else {
+            kafkaProducer.sendNotificacionesMessage(JsonConverter.toJSON(NotificationObject.builder().
+                    email(reservaRequest.getUsuario().getEmail()).
+                    nombreUsuario(reservaRequest.getUsuario().getFirstName() + reservaRequest.getUsuario().getLastName()).
+                    valor(Integer.valueOf(reservaRequest.getTotal())).
+                    referencia(Integer.valueOf("123456")).
+                    mensaje("Le informamos que su reserva necesita aprobacion manual. Cuando esta sea realizada le notificaremos").build()));
+            return ReservaResponse.builder().usuario(reservaRequest.getUsuario()).
+                    productList(reservaRequest.getProductList()).reservaStatus("IN_APPROVAL").build();
+        }
     }
 
-    public PagoResponse realizarPago(PagoRequest pagoRequest){
+    public PagoResponse realizarPago(PagoRequest pagoRequest) {
 
         try {
             PagoResponse pagoResponse = pagoAPIClient.createPayment(pagoRequest);
             return pagoResponse;
-        }catch(Exception e) {
+        } catch (Exception e) {
             throw new RestClientException(e.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
 
-    public PagoResponse compensarPago(PagoRequest pagoRequest){
+    public PagoResponse compensarPago(PagoRequest pagoRequest) {
 
         try {
             PagoResponse pagoResponse = pagoAPIClient.compensatePayment(pagoRequest);
             return pagoResponse;
-        }catch(Exception e) {
+        } catch (Exception e) {
             throw new RestClientException(e.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
 
-    public void guardarReserva(ReservaRequest reservaRequest, PagoResponse pagoResponse){
+    public void guardarReserva(ReservaRequest reservaRequest, PagoResponse pagoResponse) {
 
         Usuario usuario = Usuario.builder().id(reservaRequest.getUsuario().getId()).email(reservaRequest.getUsuario().getEmail()).
                 firstName(reservaRequest.getUsuario().getFirstName()).lastName(reservaRequest.getUsuario().getLastName()).build();
@@ -94,7 +109,7 @@ public class ReservaServiceImpl implements ReservaService {
         reservaRepository.save(reserva);
 
         List<Producto> productoList = new ArrayList<>();
-        for (ProductoDTO productoDTO:reservaRequest.getProductList()) {
+        for (ProductoDTO productoDTO : reservaRequest.getProductList()) {
             Producto producto = Producto.builder().idProducto(productoDTO.getId()).estado("IN_PROCESS").
                     idProveedor(productoDTO.getProviderId()).reserva(reserva).build();
             productoList.add(producto);
@@ -108,25 +123,25 @@ public class ReservaServiceImpl implements ReservaService {
         PagoResponse pagoResponse = pagoAPIClient.consultarPago(reserva.getIdPago());
         PagoRequest pagoRequest = PagoRequest.builder().payment(PaymentDTO.builder().idConvenio(1).cardNumber(5412751234123456L).
                 cardOwnerId(1010234755).cardDate("08-2020").cardType("MasterCard").cvv(242).due(24).
-                cardOwnerName(reserva.getUsuario().getFirstName()+" "+reserva.getUsuario().getLastName()).build()).user(
+                cardOwnerName(reserva.getUsuario().getFirstName() + " " + reserva.getUsuario().getLastName()).build()).user(
                 UsuarioDTO.builder().id(reserva.getUsuario().getId()).
-                email(reserva.getUsuario().getEmail()).firstName(reserva.getUsuario().getFirstName()).lastName(reserva.getUsuario().getLastName()).build()).
+                        email(reserva.getUsuario().getEmail()).firstName(reserva.getUsuario().getFirstName()).lastName(reserva.getUsuario().getLastName()).build()).
                 referencia(Integer.valueOf(pagoResponse.getReferencia())).valor(Integer.valueOf(pagoResponse.getValor())).build();
         this.compensarPago(pagoRequest);
-        for(Producto producto:reserva.getProductos()){
+        for (Producto producto : reserva.getProductos()) {
             producto.setEstado("REJECTED");
         }
         reserva.setEstado("REJECTED");
         reservaRepository.save(reserva);
         kafkaProducer.sendNotificacionesMessage(
-                construirMensajeConfirmacion(reserva,"Le informamos que su reserva ha sido rechazada y el pago ha sido compensado"));
+                construirMensajeConfirmacion(reserva, "Le informamos que su reserva ha sido rechazada y el pago ha sido compensado"));
     }
 
     @Override
     public Optional<Reserva> consultarReserva(int id) {
 
         Optional<Reserva> reserva = reservaRepository.findById(id);
-        if(reserva.isEmpty())
+        if (reserva.isEmpty())
             throw new NotFoundException("reserva no encontrada");
         return reserva;
 
@@ -135,7 +150,7 @@ public class ReservaServiceImpl implements ReservaService {
     @Override
     public Iterable<Reserva> consultarListaReserva() {
         Iterable<Reserva> listaReserva = reservaRepository.findAll();
-        if(!listaReserva.iterator().hasNext())
+        if (!listaReserva.iterator().hasNext())
             throw new NotFoundException("No hay reservas en la lista");
         return listaReserva;
     }

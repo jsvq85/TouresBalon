@@ -20,5 +20,7 @@ public class UsuarioDTO {
   private String lastName;
   @NotNull
   private String email;
+  @NotNull
+  private String categoria;
 
 }
