@@ -24,21 +24,20 @@ public class PagoController {
         this.ps = ps;
     }
 
-    @Operation(summary = "Obtiene el valor de una factura")
+    @Operation(summary = "Obtiene los valores de un pago")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Se obtuvo el valor de la factura satisfactoriamente",
+            @ApiResponse(responseCode = "200", description = "Se obtuvo el valor del pago satisfactoriamente",
                     content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = String.class))}),
             @ApiResponse(responseCode = "400", description = "Peticion incorrecta",
                     content = @Content),
-            @ApiResponse(responseCode = "404", description = "factura no encontrado",
+            @ApiResponse(responseCode = "404", description = "pago no encontrado",
                     content = @Content),
-            @ApiResponse(responseCode = "500", description = "Error obteniendo la factura",
+            @ApiResponse(responseCode = "500", description = "Error obteniendo el pago",
                     content = @Content)})
     @GetMapping
-    public PagoResponse consultarFactura(@RequestParam(value = "idConvenio") Integer idConvenio,
-                                         @RequestParam(value = "referencia") Integer referencia) {
-        return ps.consultarFactura(idConvenio, referencia);
+    public PagoResponse consultarPago(@RequestParam(value = "referencia") long referencia) {
+        return ps.consultarPago(referencia);
     }
 
     @Operation(summary = "Genera un pago de factura")

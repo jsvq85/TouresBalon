@@ -10,6 +10,7 @@ import edu.javeriana.touresbalon.reserva.exceptions.RestClientException;
 import edu.javeriana.touresbalon.reserva.kafka.KafkaProducer;
 import edu.javeriana.touresbalon.reserva.repository.ProductoRepository;
 import edu.javeriana.touresbalon.reserva.repository.ReservaRepository;
+import edu.javeriana.touresbalon.reserva.repository.UsuarioRepository;
 import edu.javeriana.touresbalon.reserva.service.ReservaService;
 import edu.javeriana.touresbalon.reserva.utils.JsonConverter;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,8 @@ public class ReservaServiceImpl implements ReservaService {
     private ReservaRepository reservaRepository;
     @Autowired
     private ProductoRepository productoRepository;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
     @Autowired
     private PagoAPIClient pagoAPIClient;
     @Autowired
@@ -85,9 +88,9 @@ public class ReservaServiceImpl implements ReservaService {
 
         Usuario usuario = Usuario.builder().id(reservaRequest.getUsuario().getId()).email(reservaRequest.getUsuario().getEmail()).
                 firstName(reservaRequest.getUsuario().getFirstName()).lastName(reservaRequest.getUsuario().getLastName()).build();
-
         Reserva reserva = Reserva.builder().estado("IN_PROCESS").fechaRegistro(new Timestamp(System.currentTimeMillis())).
                 usuario(usuario).idPago(Long.parseLong(pagoResponse.getReferencia())).valor(Long.parseLong(pagoResponse.getValor())).build();
+        reserva.setUsuario(usuario);
         reservaRepository.save(reserva);
 
         List<Producto> productoList = new ArrayList<>();
@@ -102,7 +105,21 @@ public class ReservaServiceImpl implements ReservaService {
     @Override
     public void eliminarReserva(Reserva reserva) {
 
-        reservaRepository.delete(reserva);
+        PagoResponse pagoResponse = pagoAPIClient.consultarPago(reserva.getIdPago());
+        PagoRequest pagoRequest = PagoRequest.builder().payment(PaymentDTO.builder().idConvenio(1).cardNumber(5412751234123456L).
+                cardOwnerId(1010234755).cardDate("08-2020").cardType("MasterCard").cvv(242).due(24).
+                cardOwnerName(reserva.getUsuario().getFirstName()+" "+reserva.getUsuario().getLastName()).build()).user(
+                UsuarioDTO.builder().id(reserva.getUsuario().getId()).
+                email(reserva.getUsuario().getEmail()).firstName(reserva.getUsuario().getFirstName()).lastName(reserva.getUsuario().getLastName()).build()).
+                referencia(Integer.valueOf(pagoResponse.getReferencia())).valor(Integer.valueOf(pagoResponse.getValor())).build();
+        this.compensarPago(pagoRequest);
+        for(Producto producto:reserva.getProductos()){
+            producto.setEstado("REJECTED");
+        }
+        reserva.setEstado("REJECTED");
+        reservaRepository.save(reserva);
+        kafkaProducer.sendNotificacionesMessage(
+                construirMensajeConfirmacion(reserva,"Le informamos que su reserva ha sido rechazada y el pago ha sido compensado"));
     }
 
     @Override
@@ -121,6 +138,15 @@ public class ReservaServiceImpl implements ReservaService {
         if(!listaReserva.iterator().hasNext())
             throw new NotFoundException("No hay reservas en la lista");
         return listaReserva;
+    }
+
+    public String construirMensajeConfirmacion(Reserva reserva, String mensaje) {
+        return JsonConverter.toJSON(NotificationObject.builder().
+                email(reserva.getUsuario().getEmail()).
+                nombreUsuario(reserva.getUsuario().getFirstName() + reserva.getUsuario().getLastName()).
+                valor((int) reserva.getValor()).
+                referencia(Integer.valueOf(reserva.getIdReserva())).
+                mensaje(mensaje).build());
     }
 
 }

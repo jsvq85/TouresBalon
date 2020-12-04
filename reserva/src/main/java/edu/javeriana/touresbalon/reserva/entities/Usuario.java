@@ -16,8 +16,7 @@ import java.util.List;
 public class Usuario {
 
     @Id
-    @Column(name = "ID")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "id", unique = true, nullable = false)
     private int id;
     @Column(name = "FIRST_NAME")
     private String firstName;
@@ -25,7 +24,7 @@ public class Usuario {
     private String lastName;
     @Column(name = "EMAIL")
     private String email;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuario")
+    @OneToMany(mappedBy = "usuario")
     private List<Reserva> reservaList;
 
 }

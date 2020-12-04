@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PagoRepository extends CrudRepository<Pago, Integer> {
 
+    Pago findByReferencia(long referenciaPago);
+
 }

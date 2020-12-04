@@ -5,6 +5,7 @@ import edu.javeriana.touresbalon.reserva.dto.PagoResponse;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -18,6 +19,10 @@ public interface PagoAPIClient {
     @Retryable( value = RuntimeException.class,
             maxAttempts = 3, backoff = @Backoff(delay = 5000))
     PagoResponse compensatePayment(PagoRequest pagoRequest);
+
+    @Retryable( value = RuntimeException.class,
+            maxAttempts = 3, backoff = @Backoff(delay = 5000))
+    PagoResponse consultarPago(long referencia);
 
     @Recover
     PagoResponse retryPaymentRecoveryFailure(RuntimeException t, PagoRequest pagoRequest);

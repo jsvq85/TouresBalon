@@ -22,27 +22,19 @@ public class Pago {
     private int idPago;
 
     @Basic
-    @Column(name = "ID_FACTURA")
-    private int idFactura;
+    @Column(name = "REFERENCIA")
+    private long referencia;
 
     @Basic
-    @Column(name = "PAGO_TOTAL")
-    private BigDecimal pagoTotal;
+    @Column(name = "VALOR")
+    private long valor;
 
     @Basic
-    @Column(name = "PAIS")
-    private int idPais;
-
-    @Basic
-    @Column(name = "IMPUESTO")
-    private BigDecimal impuesto;
+    @Column(name = "NRO_TRANSACCION")
+    private long nroTransaccion;
 
     @Basic
     @Column(name = "FECHA_PAGO")
     private Timestamp fechaPago;
-
-    @Basic
-    @Column(name = "FECHA_LIMITE_PAGO")
-    private Timestamp fechaLimitePago;
 
 }

@@ -1,12 +1,14 @@
 package edu.javeriana.touresbalon.reserva.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class PagoRequest {
 
   private PaymentDTO payment;
@@ -14,12 +16,4 @@ public class PagoRequest {
   private Integer referencia;
   private Integer valor;
 
-  public PagoRequest(PaymentDTO payment, UsuarioDTO usuario, Integer total) {
-
-    this.payment = payment;
-    this.user = usuario;
-    this.valor = total;
-    this.referencia = referencia;
-
-  }
 }

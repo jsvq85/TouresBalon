@@ -90,6 +90,11 @@ public class PagoAPIClientImpl implements PagoAPIClient {
     }
 
     @Override
+    public PagoResponse consultarPago(long referencia) {
+        return null;
+    }
+
+    @Override
     public PagoResponse retryPaymentRecoveryFailure(RuntimeException t, PagoRequest pagoRequest) {
         LOGGER.info("Retry Recovery failure when trying to call user service - {}", t.getMessage());
         throw t;

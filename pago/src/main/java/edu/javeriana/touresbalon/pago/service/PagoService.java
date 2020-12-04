@@ -5,7 +5,8 @@ import edu.javeriana.touresbalon.pago.model.PagoResponse;
 
 public interface PagoService {
 
-    PagoResponse consultarFactura(Integer idConvenio, Integer referencia);
+
+    PagoResponse consultarPago(long referencia);
 
     PagoResponse pagarFactura(PagoRequest data);
 

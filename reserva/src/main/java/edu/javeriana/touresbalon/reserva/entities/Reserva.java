@@ -45,7 +45,7 @@ public class Reserva {
     private long valor;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "ID", nullable = false)
+    @JoinColumn(name="id")
     private Usuario usuario;
 
 
