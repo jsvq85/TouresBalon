@@ -26,5 +26,8 @@ public class Usuario {
     private String email;
     @OneToMany(mappedBy = "usuario")
     private List<Reserva> reservaList;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "payment_id", referencedColumnName = "id")
+    private Payment payment;
 
 }

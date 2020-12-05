@@ -57,6 +57,24 @@ public class ReservaController {
         return ResponseEntity.ok(result);
     }
 
+    @Operation(summary = "Obtiene una reserva")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Se obtuvo el reserva satisfactoriamente",
+                    content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = String.class))}),
+            @ApiResponse(responseCode = "400", description = "Peticion incorrecta",
+                    content = @Content),
+            @ApiResponse(responseCode = "404", description = "Reserva no encontrado",
+                    content = @Content),
+            @ApiResponse(responseCode = "500", description = "Error obteniendo el reserva",
+                    content = @Content)})
+    @GetMapping(value = "/aprobar/{reservaId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> aprobarReserva(@PathVariable @NotNull String reservaId) {
+        ReservaResponse result = reservaService.aprobarReserva(Integer.valueOf(reservaId));
+        return ResponseEntity.ok(result);
+    }
+
+
     @Operation(summary = "Obtiene lista de reserva")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Se obtuvo lista de reserva satisfactoriamente",

@@ -11,6 +11,7 @@ public interface ReservaService {
     public ReservaResponse crearReserva(ReservaRequest reservaRequest);
     public void eliminarReserva(Reserva reserva);
     public Optional<Reserva> consultarReserva(int id);
+    public ReservaResponse aprobarReserva(int id);
     public Iterable<Reserva> consultarListaReserva();
 
 }
