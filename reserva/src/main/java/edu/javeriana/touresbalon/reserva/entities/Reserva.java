@@ -4,6 +4,9 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import lombok.*;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.data.repository.cdi.Eager;
+
 import javax.persistence.*;
 
 @Entity
@@ -33,7 +36,7 @@ public class Reserva {
     @Column(name = "COMENTARIOS")
     private String comentarios;
 
-    @OneToMany(mappedBy = "reserva")
+    @OneToMany(mappedBy = "reserva",fetch =  FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Producto> productos;
 
     @Basic

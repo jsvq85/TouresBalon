@@ -74,8 +74,8 @@ public class PagoAPIClientImpl implements PagoAPIClient {
         String urlComplement = "/api/v1/pago";
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> entity = new HttpEntity<>(JsonConverter.toJSON(pagoRequest), headers);
         ResponseEntity<String> result = restTemplate.exchange(pagoServiceUrl + urlComplement, HttpMethod.PUT, entity, String.class);
 
         if (result.getStatusCode().is2xxSuccessful()) {

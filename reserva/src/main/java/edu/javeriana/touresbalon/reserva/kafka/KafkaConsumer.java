@@ -32,14 +32,15 @@ public class KafkaConsumer {
     public void listenProviderNotification(String message) {
 
         ProductoReservationInputDTO data = JsonConverter.toObject(message, ProductoReservationInputDTO.class);
-        if (data.getType().equals("COMMAND_CREATE_RESERVATION")) {
-            Producto producto = productoRepository.findByIdProductoAndIdProveedor(data.getProductId(), data.getProviderId());
-            producto.setEstado("CONFIRMED");
-            productoRepository.save(producto);
-            confirmarReserva(producto);
-        } else if (data.getType().equals("COMMAND_FAILED_RESERVATION")) {
-            Producto producto = productoRepository.findByIdProductoAndIdProveedor(data.getProductId(), data.getProviderId());
-            reservaService.eliminarReserva(producto.getReserva());
+        Producto producto = productoRepository.findByIdAndIdProductoAndIdProveedor(Integer.valueOf(data.getId()), data.getProductId(), data.getProviderId());
+        if(producto!= null) {
+            if (data.getType().equals("COMMAND_CREATE_RESERVATION")) {
+                producto.setEstado("CONFIRMED");
+                productoRepository.save(producto);
+                confirmarReserva(producto);
+            } else if (data.getType().equals("COMMAND_FAILED_RESERVATION")) {
+                reservaService.eliminarReserva(producto.getReserva());
+            }
         }
     }
 

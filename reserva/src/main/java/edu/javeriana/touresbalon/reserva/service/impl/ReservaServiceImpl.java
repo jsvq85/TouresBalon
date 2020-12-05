@@ -134,7 +134,7 @@ public class ReservaServiceImpl implements ReservaService {
                 cardOwnerName(reserva.getUsuario().getFirstName() + " " + reserva.getUsuario().getLastName()).build()).user(
                 UsuarioDTO.builder().id(reserva.getUsuario().getId()).
                         email(reserva.getUsuario().getEmail()).firstName(reserva.getUsuario().getFirstName()).lastName(reserva.getUsuario().getLastName()).build()).
-                referencia(Integer.valueOf(pagoResponse.getReferencia())).valor(Integer.valueOf(pagoResponse.getValor())).build();
+                referencia((int)reserva.getIdPago()).valor((int)reserva.getValor()).build();
         this.compensarPago(pagoRequest);
         for (Producto producto : reserva.getProductos()) {
             producto.setEstado("REJECTED");

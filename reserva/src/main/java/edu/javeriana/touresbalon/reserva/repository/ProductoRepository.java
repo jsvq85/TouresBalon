@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface ProductoRepository extends CrudRepository<Producto, Integer> {
 
-    Producto findByIdProductoAndIdProveedor(int idProducto, int idProveedor);
+    Producto findByIdAndIdProductoAndIdProveedor(int id, int idProducto, int idProveedor);
 
     List<Producto> findByReserva_IdReservaAndAndEstado(int idReserva, String estado);
 
